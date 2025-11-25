@@ -1,7 +1,6 @@
 {
   "name": "backendnode",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -17,13 +16,23 @@
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "mysql2": "^3.15.2",
+    "mysql2": "^3.15.3",
     "request-ip": "^3.3.0",
     "sequelize": "^6.37.7",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10",
+    "nodemon": "^3.1.11",
+    "sequelize-cli": "^6.6.3",
     "swagger-autogen": "^2.23.7"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tearp89/backendnode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Tearp89/backendnode/issues"
+  },
+  "homepage": "https://github.com/Tearp89/backendnode#readme",
+  "description": ""
 }
