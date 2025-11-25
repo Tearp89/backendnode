@@ -11,8 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      producto.belongsToMany(models.categoria, {as: 'categorias', through: 'categoriaproducto', foreignkey: 'productoid'});
+      producto.belongsToMany(models.categoria, { as: 'categorias', through: 'categoriaproducto', foreignkey: 'productoid' });
       producto.belongsTo(models.archivo);
+
+      producto.belongsToMany(models.carrito, {
+        through: models.carritoproducto,
+        foreignKey: 'productoid',
+        otherKey: 'carritoid',
+        as: 'carritos'
+      });
     }
   }
   producto.init({
@@ -25,12 +32,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: "Sin titulo"
     },
-    description: {
+    descripcion: {
       type: DataTypes.TEXT,
       defaultValue: "Sin descripción"
     },
     precio: {
-      type: DataTypes.DECIMAL(10,2),
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     }
   }, {
