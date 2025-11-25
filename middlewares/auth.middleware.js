@@ -10,7 +10,7 @@ const Authorize = (rol) => {
             const error = new Error('Acceso denegado')
             error.statusCode = 401
 
-            if (!authHeader.startsWith('Bearer '))
+            if (!authHeader || !authHeader.startsWith('Bearer '))
                 return next(error)
 
             // Obtiene el token de la solicitud
