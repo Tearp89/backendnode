@@ -27,15 +27,26 @@ self.getAll = async function (req, res, next) {
 
     let data = await producto.findAll({
       where: filters,
-      attributes: ['id', 'productoid', 'titulo', 'descripcion', 'precio', 'archivoid'],
+      attributes: [
+        ['id', 'productoId'],
+        'titulo',
+        'descripcion',
+        'precio',
+        'archivoid'
+      ],
       include: {
         model: categoria,
         as: 'categorias',
-        attributes: ['id', 'categoriaId', 'nombre', 'protegida'],
+        attributes: [
+          ['id', 'categoriaId'],
+          'nombre',
+          'protegida'
+        ],
         through: { attributes: [] }
       },
       subQuery: false
     })
+
 
     return res.status(200).json(data)
   } catch (error) {
@@ -49,14 +60,25 @@ self.get = async function (req, res, next) {
     let id = req.params.id
 
     let data = await producto.findByPk(id, {
-      attributes: ['id', 'productoid', 'titulo', 'descripcion', 'precio', 'archivoid'],
+      attributes: [
+        ['id', 'productoId'],
+        'titulo',
+        'descripcion',
+        'precio',
+        'archivoid'
+      ],
       include: {
         model: categoria,
         as: 'categorias',
-        attributes: ['id', 'categoriaId', 'nombre', 'protegida'],
+        attributes: [
+          ['id', 'categoriaId'],
+          'nombre',
+          'protegida'
+        ],
         through: { attributes: [] }
       }
     })
+
 
     if (data)
       res.status(200).json(data)
