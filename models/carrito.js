@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         otherKey: 'productoid',
         as: 'productos'
       });
+
+      carrito.hasOne(models.pedido, {
+        foreignKey: 'carritoid',
+        as: 'pedido'
+      });
     }
   }
 

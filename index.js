@@ -35,6 +35,8 @@ app.use("/api/archivos", require('./routes/archivos.routes'))
 app.use("/api/bitacora", require('./routes/bitacora.routes'))
 app.use('/api/carrito', require('./routes/carrito.routes'))
 app.use('/api/carritoproductos', require('./routes/carritoproducto.routes'))
+app.use("/api/pedido", require('./routes/pedido.routes'))
+
 
 
 app.get("/*splat", (req, res) => {

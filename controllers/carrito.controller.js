@@ -1,4 +1,4 @@
-const { carrito, carritoproducto, producto, usuario, Sequelize } = require('../models')
+const { carrito, carritoproducto, producto, usuario, pedido, Sequelize } = require('../models')
 const ClaimTypes = require('../config/claimtypes')
 
 let self = {}
@@ -167,23 +167,47 @@ self.clear = async function (req, res, next) {
   }
 }
 
-// POST: api/carrito/checkout
+// PATCH: api/carrito
 self.checkout = async function (req, res, next) {
   try {
-    const { cart } = await getOrCreateActiveCart(req)
+    const { cart, user } = await getOrCreateActiveCart(req)
 
+    // 1. Obtener items del carrito
     const items = await carritoproducto.findAll({ where: { carritoid: cart.id } })
     if (items.length === 0)
       return res.status(400).json({ mensaje: 'El carrito está vacío' })
 
+    // 2. Calcular total
+    const total = items.reduce((acc, item) => {
+      return acc + Number(item.subtotal)
+    }, 0)
+
+    // 3. Marcar carrito como COMPLETADO
     cart.estado = 'COMPLETADO'
     await cart.save()
 
+    // 4. Crear pedido ligado a ese carrito
+    const nuevoPedido = await pedido.create({
+      carritoid: cart.id,
+      usuarioid: user.id,
+      total,
+      estado: 'CREADO' // o PAGADO si quieres asumir pago inmediato
+    })
+
+    // Bitácora
     req.bitacora("carrito.checkout", cart.id)
-    res.status(200).json({ mensaje: 'Compra realizada con éxito' })
+    req.bitacora("pedido.crear", nuevoPedido.id)
+
+    // 5. Responder con info del pedido
+    res.status(200).json({
+      mensaje: 'Compra realizada con éxito',
+      pedidoId: nuevoPedido.id,
+      total
+    })
   } catch (error) {
     next(error)
   }
 }
+
 
 module.exports = self
