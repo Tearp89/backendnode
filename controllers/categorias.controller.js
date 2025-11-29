@@ -28,7 +28,7 @@ self.get = async function (req, res, next) {
   try {
     let id = req.params.id
     let data = await categoria.findByPk(id, { 
-      attributes: ['id', 'categoriaId', 'nombre', 'protegida'] 
+      attributes: [['id', 'categoriaId'], 'nombre', 'protegida'] 
     })
     if (data)
       res.status(200).json(data)

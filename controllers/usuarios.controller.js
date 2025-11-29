@@ -55,30 +55,51 @@ self.get = async function (req, res, next) {
 // POST: api/usuarios
 self.create = async function (req, res, next) {
     try {
-        const rolusuario = await rol.findOne({ where: { nombre: req.body.rol } })
+        const rolusuario = await rol.findOne({ where: { nombre: req.body.rol } });
+        
+        // 🚨 FIX 1: Validar que el rol exista
+        if (!rolusuario) {
+             // Si el rol no se encuentra (a pesar de la selección), devolvemos un 400
+             return res.status(400).json({ error: 'El rol de usuario especificado no existe.' });
+        }
 
+        // 🚨 FIX 2: Validar que la contraseña existe antes de hashearla
+        if (!req.body.password) {
+             return res.status(400).json({ error: 'El campo contraseña es obligatorio.' });
+        }
+        
+        // Calculamos el hash de la contraseña de forma segura
+        const passwordHash = await bcrypt.hash(req.body.password, 10);
+        
         const data = await usuario.create({
             id: crypto.randomUUID(),
             email: req.body.email,
-            passwordhash: await bcrypt.hash(req.body.password, 10),
+            passwordhash: passwordHash, // Usamos la variable hasheada
             nombre: req.body.nombre,
-            rolid: rolusuario.id
-        })
+            rolid: rolusuario.id // Usamos el ID del rol encontrado
+        });
 
         // Bitacora
-        req.bitacora("usuarios.crear", data.email)
+        req.bitacora("usuarios.crear", data.email);
 
         res.status(201).json({
             id: data.id,
             email: data.email,
             nombre: data.nombre,
-            rolid: rolusuario.nombre
-        })
+            rolid: rolusuario.nombre,
+            protegido: 0
+        });
 
     } catch (error) {
-        next(error)
+        // 🚨 FIX 3: Manejar errores de base de datos (duplicidad de email)
+        if (error.name === 'SequelizeUniqueConstraintError' || error.name === 'SequelizeValidationError') {
+            return res.status(400).json({ error: 'El correo electrónico ya existe o los datos de entrada son inválidos.' });
+        }
+        
+        // Propaga el error para que siga siendo un 500 para fallos no controlados
+        next(error);
     }
-}
+};
 
 
 // PUT: api/usuarios/email
