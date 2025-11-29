@@ -14,6 +14,6 @@ router.post('/items', Authorize('Usuario,Administrador'), carrito.addItem)
 router.put('/items/:id', Authorize('Usuario,Administrador'), carrito.updateItem)
 
 router.delete('/items/:id', Authorize('Usuario,Administrador'), carrito.removeItem)
-router.delete('/items', Authorize('Usuario,Administrador'), carrito.clear)
+router.delete('/', Authorize('Usuario,Administrador'), carrito.clear)
 
 module.exports = router

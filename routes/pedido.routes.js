@@ -14,4 +14,7 @@ router.get('/:id', Authorize('Usuario,Administrador'), pedidos.getById)
 // Todos los pedidos (solo admin)
 router.get('/admin/todos', Authorize('Administrador'), pedidos.getAll)
 
+router.post('/', Authorize('Usuario,Administrador'), pedidos.create)
+
+
 module.exports = router
