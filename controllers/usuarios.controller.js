@@ -74,9 +74,10 @@ self.create = async function (req, res, next) {
         const data = await usuario.create({
             id: crypto.randomUUID(),
             email: req.body.email,
-            passwordhash: passwordHash, // Usamos la variable hasheada
+            passwordHash: passwordHash, // Usamos la variable hasheada
             nombre: req.body.nombre,
-            rolid: rolusuario.id // Usamos el ID del rol encontrado
+            rolId: rolusuario.id, // Usamos el ID del rol encontrado
+            protegido: 0
         });
 
         // Bitacora
